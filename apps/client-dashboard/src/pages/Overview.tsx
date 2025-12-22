@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { Bot, Workflow, MessageSquare, Clock, Loader2 } from 'lucide-react';
 import { portalApi, getClients, useClientStore, Bot as BotType } from '../lib/api';
+import { ActivitySparkline } from '../components/ActivitySparkline';
 
 export default function Overview() {
   const { clientId, clientName, setClient } = useClientStore();
@@ -45,10 +46,10 @@ export default function Overview() {
 
   return (
     <div>
-      {/* Client Selector (Demo Mode) */}
+      {/* Client Selector - TEMPORARY FOR TESTING, will be removed when auth is implemented */}
       {clients && clients.length > 1 && (
         <div className="mb-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-          <span className="text-amber-400 text-sm">Demo Mode: </span>
+          <span className="text-amber-400 text-sm">🔧 Test Mode (will be removed): </span>
           <select
             value={clientId}
             onChange={(e) => {
@@ -74,11 +75,25 @@ export default function Overview() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard title="My Bots" value={data?.stats.activeBots || 0} icon={Bot} />
         <StatCard title="Automations" value={data?.stats.automations || 0} icon={Workflow} />
-        <StatCard 
-          title="Messages (30d)" 
-          value={data?.stats.totalMessages?.toLocaleString() || '0'} 
-          icon={MessageSquare} 
-        />
+        
+        {/* Messages Card with Sparkline Chart */}
+        <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 relative overflow-hidden group hover:border-indigo-500/30 transition-all">
+          <div className="flex justify-between items-start z-10 relative">
+            <div>
+              <p className="text-sm text-gray-400">Messages (30d)</p>
+              <h3 className="text-3xl font-bold text-white mt-1">
+                {data?.stats.totalMessages?.toLocaleString() || '0'}
+              </h3>
+            </div>
+            <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+              <MessageSquare className="w-5 h-5" />
+            </div>
+          </div>
+          <ActivitySparkline color="indigo" />
+          {/* Decorative background effect */}
+          <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-all" />
+        </div>
+
         <StatCard title="Support Until" value={data?.stats.supportUntil || '-'} icon={Clock} />
       </div>
 
