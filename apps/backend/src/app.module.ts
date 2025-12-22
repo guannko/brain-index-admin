@@ -7,6 +7,7 @@ import { PrismaService } from './prisma.service';
 import { HeartbeatModule } from './modules/heartbeat/heartbeat.module';
 import { HealthModule } from './modules/health/health.module';
 import { ClientsModule } from './modules/clients/clients.module';
+import { ClientPortalModule } from './modules/client-portal/client-portal.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ClientsModule } from './modules/clients/clients.module';
     HeartbeatModule,
     HealthModule,
     ClientsModule,
+    ClientPortalModule,
   ],
   providers: [PrismaService],
   exports: [PrismaService],
