@@ -10,7 +10,10 @@
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
   },
   "dependencies": {
     "@brain-index/types": "workspace:*",
@@ -22,7 +25,7 @@
     "@nestjs/mongoose": "^10.0.0",
     "@nestjs/passport": "^10.0.0",
     "@nestjs/platform-express": "^10.3.0",
-    "@nestjs/typeorm": "^10.0.0",
+    "@prisma/client": "^5.7.0",
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
@@ -32,8 +35,7 @@
     "passport-jwt": "^4.0.1",
     "pg": "^8.11.0",
     "reflect-metadata": "^0.1.14",
-    "rxjs": "^7.8.0",
-    "typeorm": "^0.3.17"
+    "rxjs": "^7.8.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.3.0",
@@ -43,6 +45,7 @@
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.0",
     "@types/passport-jwt": "^3.0.13",
+    "prisma": "^5.7.0",
     "typescript": "^5.3.0"
   }
 }

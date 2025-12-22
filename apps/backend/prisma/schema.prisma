@@ -1,0 +1,113 @@
+// Brain Index - Database Schema
+// Prisma ORM for PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- ENUMS ---
+
+enum Role {
+  SUPERADMIN
+  DEVELOPER
+  VIEWER
+}
+
+enum ClientStatus {
+  LEAD
+  ACTIVE
+  PAUSED
+  CHURNED
+}
+
+enum ProjectStatus {
+  DISCOVERY
+  DEVELOPMENT
+  DELIVERED
+  SUPPORT
+}
+
+enum BotPlatform {
+  TELEGRAM
+  WHATSAPP
+  DISCORD
+}
+
+// --- MODELS ---
+
+model AdminUser {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // Hash
+  name      String
+  role      Role     @default(DEVELOPER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admin_users")
+}
+
+model Client {
+  id              String       @id @default(uuid())
+  name            String
+  email           String       @unique
+  company         String?
+  phone           String?
+  status          ClientStatus @default(ACTIVE)
+  
+  // Relations
+  projects        Project[]
+  bots            Bot[]
+  
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@map("clients")
+}
+
+model Project {
+  id          String        @id @default(uuid())
+  name        String
+  description String?
+  status      ProjectStatus @default(DEVELOPMENT)
+  price       Decimal?      @db.Decimal(10, 2)
+  
+  // Relations
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  startDate   DateTime      @default(now())
+  deliveryDate DateTime?
+
+  @@map("projects")
+}
+
+model Bot {
+  id             String      @id @default(uuid())
+  name           String
+  platform       BotPlatform
+  username       String?     // @bot_name
+  
+  // Security (Encrypted Token)
+  tokenIv        String?     // IV for AES
+  tokenContent   String?     // Encrypted token
+  
+  // Status
+  isOnline       Boolean     @default(false)
+  
+  // Relations
+  clientId       String
+  client         Client      @relation(fields: [clientId], references: [id])
+  
+  config         Json        @default("{}")
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@map("bots")
+}
