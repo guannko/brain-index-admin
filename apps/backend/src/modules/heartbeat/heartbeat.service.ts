@@ -1,14 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { RedisService } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
 import { HeartbeatPayload, HeartbeatStatus } from '@brain-index/types';
 
 @Injectable()
 export class HeartbeatService {
   private readonly logger = new Logger(HeartbeatService.name);
+  private readonly redis: Redis;
   private readonly HEARTBEAT_TTL = 90; // seconds
 
-  constructor(@InjectRedis() private readonly redis: Redis) {}
+  constructor(private readonly redisService: RedisService) {
+    this.redis = this.redisService.getOrThrow();
+  }
 
   /**
    * Process heartbeat from a bot
