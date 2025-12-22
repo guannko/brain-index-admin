@@ -60,6 +60,11 @@ export class HeartbeatService {
     };
   }
 
+  // Alias for getBotStatus
+  async getStatus(botId: string): Promise<HeartbeatStatus> {
+    return this.getBotStatus(botId);
+  }
+
   /**
    * Get all bot statuses (for dashboard)
    */
