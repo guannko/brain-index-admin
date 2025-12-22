@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { PrismaService } from './prisma.service';
 import { HeartbeatModule } from './modules/heartbeat/heartbeat.module';
 import { HealthModule } from './modules/health/health.module';
+import { ClientsModule } from './modules/clients/clients.module';
 
 @Module({
   imports: [
@@ -13,22 +14,6 @@ import { HealthModule } from './modules/health/health.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-    }),
-
-    // PostgreSQL (Core Data)
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get('POSTGRES_HOST', 'localhost'),
-        port: config.get('POSTGRES_PORT', 5432),
-        username: config.get('POSTGRES_USER', 'admin'),
-        password: config.get('POSTGRES_PASSWORD', 'admin_password'),
-        database: config.get('POSTGRES_DB', 'brain_index_core'),
-        autoLoadEntities: true,
-        synchronize: process.env.NODE_ENV !== 'production', // Disable in prod!
-      }),
     }),
 
     // MongoDB (Logs)
@@ -60,6 +45,9 @@ import { HealthModule } from './modules/health/health.module';
     // Feature Modules
     HeartbeatModule,
     HealthModule,
+    ClientsModule,
   ],
+  providers: [PrismaService],
+  exports: [PrismaService],
 })
 export class AppModule {}
