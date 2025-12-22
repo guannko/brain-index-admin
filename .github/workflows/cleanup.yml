@@ -1,0 +1,30 @@
+name: Cleanup Legacy Files
+
+on:
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Remove legacy files
+        run: |
+          # Remove old Gulp template files
+          rm -f gulpfile.js
+          rm -f index.html
+          rm -rf pages/
+          rm -rf partials/
+          rm -rf assets/
+          
+          echo "Removed legacy files:"
+          git status
+          
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "🧹 Remove legacy Gulp template files" || echo "Nothing to commit"
+          git push
