@@ -27,9 +27,11 @@ export default function Sidebar() {
     <aside className="w-64 bg-gray-900 border-r border-gray-800">
       {/* Logo */}
       <div className="p-6 border-b border-gray-800">
-        <h1 className="text-xl font-bold text-white flex items-center gap-2">
-          <span className="text-2xl">🧠</span>
-          Brain Index
+        <h1 className="text-xl font-bold tracking-tight">
+          <span className="text-white">BR</span>
+          <span className="text-amber-400 border-b-2 border-amber-400">AI</span>
+          <span className="text-white">N </span>
+          <span className="text-indigo-400">INDEX</span>
         </h1>
         <p className="text-xs text-gray-500 mt-1">Admin Panel</p>
       </div>
