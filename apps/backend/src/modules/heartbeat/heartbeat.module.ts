@@ -5,6 +5,6 @@ import { HeartbeatService } from './heartbeat.service';
 @Module({
   controllers: [HeartbeatController],
   providers: [HeartbeatService],
-  exports: [HeartbeatService],
+  exports: [HeartbeatService], // Export for use in other modules
 })
 export class HeartbeatModule {}
