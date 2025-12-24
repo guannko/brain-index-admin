@@ -1,6 +1,7 @@
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, Logger } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { HeartbeatService } from '../heartbeat/heartbeat.service';
+import { AlertType } from '@prisma/client';
 
 @Controller('admin')
 export class AdminController {
@@ -11,7 +12,8 @@ export class AdminController {
     private readonly heartbeatService: HeartbeatService,
   ) {}
 
-  // All bots with owner details
+  // ==================== BOTS ====================
+
   @Get('bots')
   async getAllBots() {
     const bots = await this.prisma.bot.findMany({
@@ -37,7 +39,8 @@ export class AdminController {
     return botsWithStatus;
   }
 
-  // All automations
+  // ==================== AUTOMATIONS ====================
+
   @Get('automations')
   async getAllAutomations() {
     return this.prisma.automation.findMany({
@@ -50,17 +53,16 @@ export class AdminController {
     });
   }
 
-  // Infrastructure health (Mock for MVP)
+  // ==================== INFRASTRUCTURE ====================
+
   @Get('health')
   async getInfrastructureHealth() {
-    // Get real counts from DB
     const [clientCount, botCount, automationCount] = await Promise.all([
       this.prisma.client.count(),
       this.prisma.bot.count(),
       this.prisma.automation.count(),
     ]);
 
-    // Get all heartbeat statuses
     const allHeartbeats = await this.heartbeatService.getAllBotStatuses();
     const onlineBots = Object.values(allHeartbeats).filter((h: any) => h?.status === 'online').length;
 
@@ -110,47 +112,95 @@ export class AdminController {
     ];
   }
 
-  // Alerts (Mock for MVP)
+  // ==================== ALERTS ====================
+
   @Get('alerts')
   async getAlerts() {
-    // In future: real alerts from monitoring system
-    return [
-      {
-        id: '1',
-        type: 'warning',
-        title: 'High API Response Time',
-        message: 'Average response time exceeded 500ms threshold',
-        service: 'Backend API',
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
-        acknowledged: false,
+    // Seed demo alerts if empty
+    const count = await this.prisma.alert.count();
+    if (count === 0) {
+      await this.prisma.alert.createMany({
+        data: [
+          { type: AlertType.CRITICAL, message: 'Bot "BTC Analyzer" connection lost', source: 'Heartbeat Service' },
+          { type: AlertType.WARNING, message: 'High memory usage (85%) on Redis', source: 'Infrastructure' },
+          { type: AlertType.INFO, message: 'New client registered: Acme Corp', source: 'Auth System' },
+          { type: AlertType.WARNING, message: 'API response time exceeded 500ms threshold', source: 'Backend API' },
+        ]
+      });
+    }
+
+    return this.prisma.alert.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
+  }
+
+  @Patch('alerts/:id/read')
+  async markAlertAsRead(@Param('id') id: string) {
+    return this.prisma.alert.update({
+      where: { id },
+      data: { isRead: true }
+    });
+  }
+
+  @Patch('alerts/:id/unread')
+  async markAlertAsUnread(@Param('id') id: string) {
+    return this.prisma.alert.update({
+      where: { id },
+      data: { isRead: false }
+    });
+  }
+
+  // ==================== SETTINGS ====================
+
+  @Get('settings')
+  async getSettings() {
+    // Get all settings from DB
+    const settings = await this.prisma.systemSetting.findMany();
+    
+    // Convert to object
+    const settingsMap: Record<string, any> = {};
+    settings.forEach(s => {
+      settingsMap[s.key] = s.value;
+    });
+
+    // Return with defaults
+    return {
+      profile: settingsMap['profile'] || { 
+        email: 'admin@brain-index.com', 
+        name: 'Super Admin' 
       },
-      {
-        id: '2',
-        type: 'info',
-        title: 'New Client Registered',
-        message: 'John Doe (Tech Startup Inc) signed up',
-        service: 'Client Portal',
-        timestamp: new Date(Date.now() - 7200000).toISOString(),
-        acknowledged: true,
+      system: settingsMap['system'] || { 
+        maintenanceMode: false, 
+        debugLogs: true,
+        backupFrequency: 'daily',
+        logRetention: 30
       },
-      {
-        id: '3',
-        type: 'success',
-        title: 'Backup Completed',
-        message: 'Daily PostgreSQL backup finished successfully',
-        service: 'Database',
-        timestamp: new Date(Date.now() - 86400000).toISOString(),
-        acknowledged: true,
+      notifications: settingsMap['notifications'] || { 
+        telegram: true, 
+        email: true,
+        slack: false,
+        alertThreshold: 'warning'
       },
-      {
-        id: '4',
-        type: 'error',
-        title: 'Bot Offline',
-        message: 'BTC Alpha Signal bot went offline unexpectedly',
-        service: 'Bot Manager',
-        timestamp: new Date(Date.now() - 1800000).toISOString(),
-        acknowledged: false,
-      },
-    ];
+      security: settingsMap['security'] || {
+        twoFactorAuth: false,
+        sessionTimeout: 24
+      }
+    };
+  }
+
+  @Post('settings')
+  async updateSettings(@Body() body: Record<string, any>) {
+    // Upsert each settings category
+    const updates = Object.entries(body).map(([key, value]) => 
+      this.prisma.systemSetting.upsert({
+        where: { key },
+        update: { value: value as any },
+        create: { key, value: value as any }
+      })
+    );
+
+    await Promise.all(updates);
+    
+    return { status: 'updated', config: body };
   }
 }

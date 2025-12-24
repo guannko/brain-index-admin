@@ -59,6 +59,12 @@ enum InvoiceStatus {
   CANCELLED
 }
 
+enum AlertType {
+  CRITICAL
+  WARNING
+  INFO
+}
+
 // --- MODELS ---
 
 model AdminUser {
@@ -196,4 +202,24 @@ model Automation {
   updatedAt   DateTime  @updatedAt
 
   @@map("automations")
+}
+
+model Alert {
+  id        String    @id @default(uuid())
+  type      AlertType
+  message   String
+  source    String    // e.g. "Bot: BTC Analyzer" or "System: Redis"
+  isRead    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  @@map("alerts")
+}
+
+model SystemSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
 }
