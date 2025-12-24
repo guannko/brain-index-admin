@@ -38,6 +38,27 @@ enum BotPlatform {
   DISCORD
 }
 
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
 // --- MODELS ---
 
 model AdminUser {
@@ -60,9 +81,17 @@ model Client {
   phone           String?
   status          ClientStatus @default(ACTIVE)
   
+  // Billing
+  plan            String       @default("starter")
+  planPrice       Decimal?     @db.Decimal(10, 2)
+  nextBillingDate DateTime?
+  
   // Relations
   projects        Project[]
   bots            Bot[]
+  tickets         Ticket[]
+  invoices        Invoice[]
+  automations     Automation[]
   
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
@@ -110,4 +139,61 @@ model Bot {
   updatedAt      DateTime    @updatedAt
 
   @@map("bots")
+}
+
+model Ticket {
+  id          String         @id @default(uuid())
+  subject     String
+  description String?
+  status      TicketStatus   @default(OPEN)
+  priority    TicketPriority @default(NORMAL)
+  
+  // Relations
+  clientId    String
+  client      Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("tickets")
+}
+
+model Invoice {
+  id          String        @id @default(uuid())
+  number      String        @unique
+  amount      Decimal       @db.Decimal(10, 2)
+  currency    String        @default("EUR")
+  status      InvoiceStatus @default(PENDING)
+  description String?
+  pdfUrl      String?
+  dueDate     DateTime
+  paidAt      DateTime?
+  
+  // Relations
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime      @default(now())
+
+  @@map("invoices")
+}
+
+model Automation {
+  id          String    @id @default(uuid())
+  name        String
+  platform    String    // n8n, make
+  externalId  String?   // workflow ID in n8n/make
+  status      String    @default("ACTIVE") // ACTIVE, PAUSED, ERROR
+  lastRun     DateTime?
+  runsToday   Int       @default(0)
+  successRate Float     @default(100.0)
+  
+  // Relations (optional - can be global or client-specific)
+  clientId    String?
+  client      Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("automations")
 }
