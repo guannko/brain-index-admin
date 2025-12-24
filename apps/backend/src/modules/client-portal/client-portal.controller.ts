@@ -2,6 +2,12 @@ import { Controller, Get, Post, Body, Headers, HttpException, HttpStatus, Logger
 import { PrismaService } from '../../prisma.service';
 import { HeartbeatService } from '../heartbeat/heartbeat.service';
 
+interface PlanDetails {
+  name: string;
+  price: number;
+  features: string[];
+}
+
 @Controller('portal')
 export class ClientPortalController {
   private readonly logger = new Logger(ClientPortalController.name);
@@ -166,8 +172,8 @@ export class ClientPortalController {
       throw new HttpException('Client not found', HttpStatus.NOT_FOUND);
     }
 
-    // Plan details (mock for now, can be from DB or config)
-    const plans = {
+    // Plan details
+    const plans: Record<string, PlanDetails> = {
       starter: {
         name: 'Starter Plan',
         price: 99,
