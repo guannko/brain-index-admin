@@ -61,7 +61,7 @@ export class AdminController {
     ]);
 
     // Get all heartbeat statuses
-    const allHeartbeats = await this.heartbeatService.getAllStatuses();
+    const allHeartbeats = await this.heartbeatService.getAllBotStatuses();
     const onlineBots = Object.values(allHeartbeats).filter((h: any) => h?.status === 'online').length;
 
     return [
