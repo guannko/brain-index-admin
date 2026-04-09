@@ -1,27 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
-import { Activity, Bot, Users, Workflow, AlertCircle, Building2, FolderKanban } from 'lucide-react';
+import { Activity, Bot, Users, FolderKanban, Building2 } from 'lucide-react';
 import StatCard from '../components/StatCard';
-import { clientsApi, Client } from '../lib/api';
+import { clientsApi, heartbeatApi, Client } from '../lib/api';
 
 export default function Dashboard() {
-  // Fetch clients from API
   const { data: clients, isLoading: clientsLoading } = useQuery({
     queryKey: ['clients'],
     queryFn: clientsApi.getAll,
   });
 
-  // Fetch bot statuses from heartbeat API
   const { data: botStatuses, isLoading: heartbeatLoading } = useQuery({
     queryKey: ['bot-statuses'],
-    queryFn: async () => {
-      const res = await fetch('http://localhost:3000/api/v1/heartbeat');
-      return res.json();
-    },
+    queryFn: heartbeatApi.getAll,
     refetchInterval: 10000,
   });
 
   const onlineBots = botStatuses
-    ? Object.values(botStatuses).filter((b: any) => b.status === 'online').length
+    ? Object.values(botStatuses).filter((b) => b.status === 'online').length
     : 0;
 
   const totalBots = clients?.reduce((sum, c) => sum + c.bots.length, 0) || 0;
@@ -29,7 +24,6 @@ export default function Dashboard() {
 
   return (
     <div>
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-400 to-cyan-400 bg-clip-text text-transparent">
           Brain Index Admin
@@ -37,7 +31,6 @@ export default function Dashboard() {
         <p className="text-gray-400">Mission Control Center</p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
           title="Active Clients"
@@ -65,13 +58,11 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Clients Grid */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
           <Users className="w-5 h-5 text-primary-500" />
           Active Clients
         </h2>
-
         {clientsLoading ? (
           <p className="text-gray-400">Loading clients...</p>
         ) : clients && clients.length > 0 ? (
@@ -85,18 +76,16 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Bot Heartbeats */}
       <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
         <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
           <Activity className="w-5 h-5 text-primary-500" />
           Bot Heartbeats (Real-time)
         </h2>
-
         {heartbeatLoading ? (
           <p className="text-gray-400">Loading...</p>
         ) : botStatuses && Object.keys(botStatuses).length > 0 ? (
           <div className="space-y-2">
-            {Object.entries(botStatuses).map(([botId, status]: [string, any]) => (
+            {Object.entries(botStatuses).map(([botId, status]) => (
               <div
                 key={botId}
                 className="flex items-center justify-between p-3 bg-gray-800 rounded-lg"
@@ -127,9 +116,8 @@ export default function Dashboard() {
   );
 }
 
-// Client Card Component
 function ClientCard({ client }: { client: Client }) {
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     ACTIVE: 'bg-green-500/10 text-green-400 border-green-500/20',
     LEAD: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
     PAUSED: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
@@ -148,7 +136,7 @@ function ClientCard({ client }: { client: Client }) {
             {client.company || 'Individual'}
           </div>
         </div>
-        <span className={`px-2 py-1 text-xs rounded-full border ${statusColors[client.status]}`}>
+        <span className={`px-2 py-1 text-xs rounded-full border ${statusColors[client.status] || ''}`}>
           {client.status}
         </span>
       </div>
