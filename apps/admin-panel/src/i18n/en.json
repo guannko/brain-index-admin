@@ -1,0 +1,57 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "bots": "Bots",
+    "clients": "Clients",
+    "automations": "Automations",
+    "infrastructure": "Infrastructure",
+    "alerts": "Alerts",
+    "crm": "CRM",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "theme": {
+    "light": "Light theme",
+    "dark": "Dark theme"
+  },
+  "common": {
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add"
+  },
+  "crm": {
+    "subtitle": "Client and deal management",
+    "addClient": "Add client",
+    "totalClients": "Total clients",
+    "activeDeals": "Active deals",
+    "wonDeals": "Won",
+    "contacts": "Contacts",
+    "pipeline": "Pipeline",
+    "name": "Name",
+    "company": "Company",
+    "email": "Email",
+    "phone": "Phone",
+    "status": "Status",
+    "noClients": "No clients yet",
+    "status_lead": "Lead",
+    "status_active": "Active",
+    "status_paused": "Paused",
+    "status_churned": "Churned",
+    "stage_lead": "Lead",
+    "stage_qualified": "Qualified",
+    "stage_proposal": "Proposal",
+    "stage_negotiation": "Negotiation",
+    "stage_won": "Won",
+    "stage_lost": "Lost"
+  },
+  "analytics": {
+    "subtitle": "Metrics and promotion tools",
+    "trackingId": "Tracking ID",
+    "notSet": "Not set — click to configure",
+    "noTools": "No analytics tools found",
+    "runMigration": "Run the SQL migration in Supabase"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "nav": {
+    "dashboard": "Дашборд",
+    "bots": "Боты",
+    "clients": "Клиенты",
+    "automations": "Автоматизации",
+    "infrastructure": "Инфраструктура",
+    "alerts": "Уведомления",
+    "crm": "CRM",
+    "analytics": "Аналитика",
+    "settings": "Настройки"
+  },
+  "theme": {
+    "light": "Светлая тема",
+    "dark": "Тёмная тема"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "add": "Добавить"
+  },
+  "crm": {
+    "subtitle": "Управление клиентами и сделками",
+    "addClient": "Добавить клиента",
+    "totalClients": "Всего клиентов",
+    "activeDeals": "Активные сделки",
+    "wonDeals": "Выиграно",
+    "contacts": "Контакты",
+    "pipeline": "Воронка",
+    "name": "Имя",
+    "company": "Компания",
+    "email": "Email",
+    "phone": "Телефон",
+    "status": "Статус",
+    "noClients": "Клиентов пока нет",
+    "status_lead": "Лид",
+    "status_active": "Активный",
+    "status_paused": "Пауза",
+    "status_churned": "Ушёл",
+    "stage_lead": "Лид",
+    "stage_qualified": "Квалифицирован",
+    "stage_proposal": "Предложение",
+    "stage_negotiation": "Переговоры",
+    "stage_won": "Выиграно",
+    "stage_lost": "Проиграно"
+  },
+  "analytics": {
+    "subtitle": "Метрики и инструменты продвижения",
+    "trackingId": "Идентификатор отслеживания",
+    "notSet": "Не указан — нажмите для настройки",
+    "noTools": "Инструменты аналитики не найдены",
+    "runMigration": "Запустите SQL-миграцию в Supabase"
+  }
+}
