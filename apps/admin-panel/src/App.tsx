@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider } from './contexts/ThemeContext'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
+import Projects from './pages/Projects'
 import Bots from './pages/Bots'
 import Clients from './pages/Clients'
 import Automations from './pages/Automations'
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Dashboard />} />
+              <Route path="projects" element={<Projects />} />
               <Route path="bots" element={<Bots />} />
               <Route path="clients" element={<Clients />} />
               <Route path="automations" element={<Automations />} />

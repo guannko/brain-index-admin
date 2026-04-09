@@ -1,6 +1,7 @@
 {
   "nav": {
     "dashboard": "Dashboard",
+    "projects": "Projects",
     "bots": "Bots",
     "clients": "Clients",
     "automations": "Automations",
@@ -21,6 +22,13 @@
     "edit": "Edit",
     "delete": "Delete",
     "add": "Add"
+  },
+  "projects": {
+    "subtitle": "Current projects and their status",
+    "platform": "Platform",
+    "online": "Online",
+    "offline": "Offline",
+    "unknown": "Unknown"
   },
   "crm": {
     "subtitle": "Client and deal management",

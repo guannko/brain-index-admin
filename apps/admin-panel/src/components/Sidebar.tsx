@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
-  LayoutDashboard, Bot, Users, Workflow, Server,
+  LayoutDashboard, FolderKanban, Bot, Users, Workflow, Server,
   Bell, Settings, UserCheck, BarChart3, Sun, Moon,
 } from 'lucide-react'
 import { useTheme } from '../contexts/ThemeContext'
@@ -13,6 +13,7 @@ export default function Sidebar() {
 
   const navItems = [
     { path: '/', icon: LayoutDashboard, label: t('nav.dashboard') },
+    { path: '/projects', icon: FolderKanban, label: t('nav.projects') },
     { path: '/bots', icon: Bot, label: t('nav.bots') },
     { path: '/clients', icon: Users, label: t('nav.clients') },
     { path: '/automations', icon: Workflow, label: t('nav.automations') },
