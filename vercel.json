@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd apps/admin-panel && npm install && npm run build",
+  "outputDirectory": "apps/admin-panel/dist",
+  "installCommand": "echo skip",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}

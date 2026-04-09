@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
+
 export const api = axios.create({
-  baseURL: 'http://localhost:3000/api/v1',
+  baseURL: API_BASE,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -14,7 +16,7 @@ export interface Bot {
   platform: 'TELEGRAM' | 'WHATSAPP' | 'DISCORD';
   username: string | null;
   isOnline: boolean;
-  config: Record<string, any>;
+  config: Record<string, unknown>;
   createdAt: string;
 }
 
@@ -48,4 +50,8 @@ export const clientsApi = {
   create: (data: Partial<Client>) => api.post<Client>('/clients', data).then(res => res.data),
   update: (id: string, data: Partial<Client>) => api.put<Client>(`/clients/${id}`, data).then(res => res.data),
   delete: (id: string) => api.delete(`/clients/${id}`),
+};
+
+export const heartbeatApi = {
+  getAll: () => api.get<Record<string, { status: string; lastPing: string | null }>>('/heartbeat').then(res => res.data),
 };
