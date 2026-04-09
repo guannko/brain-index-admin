@@ -5,6 +5,7 @@ const key = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export const supabase = createClient(url || '', key || '')
 
+// CRM
 export interface CrmClient {
   id: string
   name: string
@@ -36,4 +37,27 @@ export interface AnalyticsIntegration {
   site: string
   tracking_id: string | null
   is_active: boolean
+}
+
+// Projects / Bots / Heartbeats
+export interface Project {
+  id: string
+  number: string
+  name: string
+  handle: string | null
+  description: string
+  platform: string
+  type: string
+  color: string
+  tags: string[]
+  heartbeat_key: string | null
+  is_active: boolean
+  created_at: string
+}
+
+export interface Heartbeat {
+  bot_id: string
+  status: 'online' | 'offline'
+  metadata: Record<string, unknown>
+  pinged_at: string
 }
