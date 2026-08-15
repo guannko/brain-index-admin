@@ -1,14 +1,6 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "cd apps/admin-panel && npm install && npm run build",
   "outputDirectory": "apps/admin-panel/dist",
   "installCommand": "echo skip",
-  "redirects": [
-    {
-      "source": "/oauth/consent",
-      "destination": "https://ops-7q4m2x9k8v3n.vercel.app/oauth/consent",
-      "permanent": false
-    }
-  ],
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }
